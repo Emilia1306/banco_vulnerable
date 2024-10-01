@@ -126,6 +126,7 @@ try {
 </head>
 <body>
     <h2>Editar Perfil</h2>
+    <p>Tu correo electrónico <?php echo $usuario['correo']; ?> actualmente está vigente :)</p>
     <form method="POST">
         <div>
             <label for="correo">Correo</label><br>
@@ -133,9 +134,8 @@ try {
         </div>
         <div>
             <label for="password">Contraseña</label><br>
-            <input type="password" name="password" required>
+            <input type="password" name="password" value="<?php echo $usuario['correo']; ?>" required>
         </div>
-        <!-- Mover el botón de envío dentro del formulario -->
         <div class="btn-container">
             <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
             <input type="submit" value="Guardar Cambios" class="btn btn-secondary">
