@@ -17,10 +17,10 @@ try {
     // Decodificar el JWT utilizando 'HS256'
     $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
 
-    // Verificar si el usuario tiene rol de administrador
+    /* // Verificar si el usuario tiene rol de administrador
     if ($decoded->rol != 'admin') {
         throw new Exception("Acceso denegado. No tienes permisos de administrador.");
-    }
+    } */
 
     // Lógica del dashboard del administrador
 } catch (Exception $e) {

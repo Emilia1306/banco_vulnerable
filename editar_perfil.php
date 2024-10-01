@@ -135,11 +135,11 @@ try {
             <label for="password">Contraseña</label><br>
             <input type="password" name="password" required>
         </div>
+        <!-- Mover el botón de envío dentro del formulario -->
+        <div class="btn-container">
+            <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
+            <input type="submit" value="Guardar Cambios" class="btn btn-secondary">
+        </div>
     </form>
-
-    <div class="btn-container">
-        <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
-        <input type="submit" value="Guardar Cambios" class="btn btn-secondary">
-    </div>
 </body>
 </html>
