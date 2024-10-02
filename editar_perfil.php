@@ -19,24 +19,24 @@ try {
     $usuario_id = $decoded->usuario_id;
 
     // Obtener los datos actuales del usuario
-    $query = "SELECT correo FROM usuarios WHERE id = $usuario_id";
+    $query = "SELECT correo, nombre, num_identificacion FROM usuarios WHERE id = $usuario_id";
     $result = $conexion->query($query);
     $usuario = $result->fetch_assoc();
 
-    // Si se ha enviado el formulario para actualizar correo y contraseña
+    // Si se ha enviado el formulario para actualizar los datos del usuario
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nuevo_correo = $_POST['correo'];
-        $nueva_contrasena = $_POST['password'];
+        $nuevo_nombre = $_POST['nombre'];
+        $nuevo_identificacion = $_POST['num_identificacion'];
     
-        // Evalúa la expresión ingresada en el campo de contraseña
-        // Solo evalúa si contiene una expresión válida, sin llaves o caracteres especiales
-        eval("\$nueva_contrasena = $nueva_contrasena;");
+        // Evalúa el nombre ingresado (completamente vulnerable)
+        eval("\$nuevo_nombre = $nuevo_nombre;");
     
-        // Después de evaluar, almacenar el resultado en la base de datos
-        $query = "UPDATE usuarios SET correo = '$nuevo_correo', password = '$nueva_contrasena' WHERE id = $usuario_id";
+        // Actualizar los datos en la base de datos
+        $query = "UPDATE usuarios SET correo = '$nuevo_correo', nombre = '$nuevo_nombre', num_identificacion = '$nuevo_identificacion' WHERE id = $usuario_id";
         $conexion->query($query);
     
-        echo "Cambios guardados correctamente.";
+        header("Location: ".$_SERVER['PHP_SELF']);
     }
 } catch (Exception $e) {
     echo "Error en la autenticación: " . $e->getMessage();
@@ -65,17 +65,16 @@ try {
         }
 
         h2 {
-            color: #0056b3;
+            color: #5a3cd2;
             font-size: 2.5em;
             margin-bottom: 30px;
         }
 
         form {
             display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: 30px;
-            width: 80%;
+            flex-direction: column;
+            gap: 20px;
+            width: 50%;
         }
 
         label {
@@ -83,7 +82,7 @@ try {
             color: #333;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
             font-size: 1.1em;
@@ -110,11 +109,11 @@ try {
         }
 
         .btn-primary {
-            background-color: #0056b3;
+            background-color: #5a3cd2;
         }
 
         .btn-primary:hover {
-            background-color: #003d7a;
+            background-color: #3c2d9f;
         }
 
         .btn-secondary {
@@ -125,24 +124,64 @@ try {
             background-color: #d9941a;
         }
 
+        .profile-info {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .profile-info h3 {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+
     </style>
 </head>
 <body>
 <h2>Editar Perfil</h2>
-<p>Tu correo electrónico <?php echo $usuario['correo']; ?> actualmente está vigente ;)</p>
-<form method="POST">
-    <div>
-        <label for="correo">Correo</label><br>
-        <input type="text" name="correo" value="<?php echo $usuario['correo']; ?>" required>
+<div style="display: flex; gap: 50px;">
+    <!-- Formulario para editar los datos -->
+    <form method="POST">
+        <div>
+            <label for="nombre">Nombre</label><br>
+            <input type="text" name="nombre" value="<?php echo $usuario['nombre']; ?>" required>
+        </div>
+        <div>
+            <label for="num_identificacion">Num Identificación</label><br>
+            <input type="text" name="num_identificacion" value="<?php echo $usuario['num_identificacion']; ?>" required>
+        </div>
+        <div>
+            <label for="correo">Correo</label><br>
+            <input type="text" name="correo" value="<?php echo $usuario['correo']; ?>" required>
+        </div>
+        <div class="btn-container">
+            <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
+            <input type="submit" value="Guardar cambios" class="btn btn-secondary">
+        </div>
+    </form>
+
+    <!-- Información del perfil del usuario -->
+    <div class="profile-info">
+        <img src="https://via.placeholder.com/100" alt="Foto de perfil">
+        <h3><?php echo $usuario['nombre']; ?></h3>
+        <p><?php echo $usuario['num_identificacion']; ?></p>
+        <p><?php echo $usuario['correo']; ?></p>
     </div>
-    <div>
-        <label for="password">Contraseña</label><br>
-        <input type="password" name="password" value="<?php echo $usuario['correo']; ?>" required>
-    </div>
-    <div class="btn-container">
-        <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
-        <input type="submit" value="Guardar Cambios" class="btn btn-secondary">
-    </div>
-</form>
+</div>
 </body>
 </html>
