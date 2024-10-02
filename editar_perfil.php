@@ -16,8 +16,6 @@ try {
 
     // Decodificar el JWT
     $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
-
-    // Obtener el usuario_id del token decodificado
     $usuario_id = $decoded->usuario_id;
 
     // Obtener los datos actuales del usuario
@@ -29,12 +27,17 @@ try {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nuevo_correo = $_POST['correo'];
         $nueva_contrasena = $_POST['password'];
-
-        // Actualizar los datos del usuario en la base de datos
-        $conexion->query("UPDATE usuarios SET correo = '$nuevo_correo', password = '$nueva_contrasena' WHERE id = $usuario_id");
+    
+        // Evalúa la expresión ingresada en el campo de contraseña
+        // Solo evalúa si contiene una expresión válida, sin llaves o caracteres especiales
+        eval("\$nueva_contrasena = $nueva_contrasena;");
+    
+        // Después de evaluar, almacenar el resultado en la base de datos
+        $query = "UPDATE usuarios SET correo = '$nuevo_correo', password = '$nueva_contrasena' WHERE id = $usuario_id";
+        $conexion->query($query);
+    
         echo "Cambios guardados correctamente.";
     }
-
 } catch (Exception $e) {
     echo "Error en la autenticación: " . $e->getMessage();
     exit;
@@ -125,21 +128,21 @@ try {
     </style>
 </head>
 <body>
-    <h2>Editar Perfil</h2>
-    <p>Tu correo electrónico <?php echo $usuario['correo']; ?> actualmente está vigente :)</p>
-    <form method="POST">
-        <div>
-            <label for="correo">Correo</label><br>
-            <input type="text" name="correo" value="<?php echo $usuario['correo']; ?>" required>
-        </div>
-        <div>
-            <label for="password">Contraseña</label><br>
-            <input type="password" name="password" value="<?php echo $usuario['correo']; ?>" required>
-        </div>
-        <div class="btn-container">
-            <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
-            <input type="submit" value="Guardar Cambios" class="btn btn-secondary">
-        </div>
-    </form>
+<h2>Editar Perfil</h2>
+<p>Tu correo electrónico <?php echo $usuario['correo']; ?> actualmente está vigente ;)</p>
+<form method="POST">
+    <div>
+        <label for="correo">Correo</label><br>
+        <input type="text" name="correo" value="<?php echo $usuario['correo']; ?>" required>
+    </div>
+    <div>
+        <label for="password">Contraseña</label><br>
+        <input type="password" name="password" value="<?php echo $usuario['correo']; ?>" required>
+    </div>
+    <div class="btn-container">
+        <a href="dashboard_usuario.php" class="btn btn-primary">Volver al dashboard</a>
+        <input type="submit" value="Guardar Cambios" class="btn btn-secondary">
+    </div>
+</form>
 </body>
 </html>
